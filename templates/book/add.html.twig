@@ -1,0 +1,17 @@
+{% extends '/base.html.twig' %}
+
+{% block sidebar %}
+    {# position parent above if we want to display the parent of the menu first for example #}
+    {{ parent() }}
+    <li><a href={{ path('book_') }}>Tous les livres</a></li>
+{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert--{{ type }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
