@@ -1,25 +1,32 @@
 <?php
+
+namespace App\Controller;
+
 use App\Entity\Book;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/book', name: 'book_')]
+#[Route('/books')]
+class BookController extends AbstractController
+{
 
-class BookController extends AbstractController {
-
-    // To have it easier
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em) {
-        $this->em = $em;
+    /**
+     * View Home books
+     */
+    #[Route('/', name: 'home')]
+    public function list(EntityManagerInterface $em): Response {
+        $books = $em->getRepository(Book::class)->findAll();
+        return $this->render('book/home.html.twig', [
+            'books' => $books,
+        ]);
     }
 
     /**
-     * Add product in the db
+     * Add book in the db
      */
-    #[Route('/add', name: 'add')]
+    #[Route('/add', name: 'book_add')]
     public function addProduct(EntityManagerInterface $em) : Response {
         $book = new Book();
         $book
@@ -32,29 +39,25 @@ class BookController extends AbstractController {
         ;
 
         $em->persist($book);
-
         // Enregistrement en dbb
         $em->flush();
-
         return $this->render('book/add.html.twig');
     }
 
     /**
-     * Update a product
+     * Update a book
      */
-    #[Route('/update/{id}', name: 'update')]
+    #[Route('/update/{id}', name: 'book-update')]
     public function updateBook(Book $book, EntityManagerInterface $em): Response {
         $book->setName('Mon livre');
-
         $em->flush();
-
         return $this->render('book/update.html.twig');
     }
 
     /**
-     * Delete a product
+     * Delete a book
      */
-    #[Route('/delete/{id}', name: 'delete')]
+    #[Route('/delete/{id}', name: 'book-delete')]
     public function deleteProduct(Book $book, EntityManagerInterface $em): Response {
         $em->remove($book);
         $em->flush();
@@ -62,24 +65,12 @@ class BookController extends AbstractController {
     }
 
     /**
-     * Read a single book
+     * View a single book
      */
-    #[Route('/view/{id}', name: 'view_first')]
+    #[Route('/view/{id}', name: 'book-view_first')]
     public function viewSingleBook(Book $book): Response {
-
         return $this->render('book/single.html.twig', [
             'book' => $book,
-        ]);
-    }
-
-    /**
-     * Read all book
-     */
-    #[Route('view/all', name: 'view-all')]
-    public function viewAllBooks(EntityManagerInterface $em): Response {
-        $books = $em->getRepository(Book::class)->findAll();
-        return $this->render('book/home.html.twig', [
-            'books' => $books,
         ]);
     }
 
