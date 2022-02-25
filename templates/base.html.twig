@@ -18,15 +18,13 @@
 <div class="sidebar">
     <ul>
         {% block sidebar %}
-            <li><a href={{ path('book_') }}>Tous les livres</a></li>
-            <li><a href={{ path('book_') }}>Tous les livres</a></li>
-            <li><a href={{ path('book_') }}>Tous les livres</a></li>
+            <li><a href={{ path('book_add') }}>Tous les livres</a></li>
         {% endblock %}
     </ul>
 </div>
 {% block body %}
 
-    {# test import images via file main js
+    {# test import images via file main js#}
     <div class="pictures">
         <img src="{{ asset('/build/test-img/image-test-2.webp') }}" alt="">
     </div>#+}
