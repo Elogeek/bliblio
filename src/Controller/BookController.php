@@ -31,9 +31,9 @@ class BookController extends AbstractController
         $book = new Book();
         $book
             ->setName('super nom')
-            ->setCategory()
+            ->setCategory(1)
             ->setAvailable(1)
-            ->setReader('')
+            ->setReader('elodie')
             ->setAuthor('bibi')
             ->setShortDescription('une super description')
         ;

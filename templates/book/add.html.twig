@@ -1,11 +1,21 @@
 {% extends '/base.html.twig' %}
 
-{% block sidebar %}
-    {# position parent above if we want to display the parent of the menu first for example #}
-    {{ parent() }}
-    <li><a href={{ path('book-view_first') }}>Voir plus</a></li>
-{% endblock %}
+  {% block title %}
+      Hello welcome in the page add a book .
+  {% endblock %}
+
+{# Block menu #}
+ {% block sidebar %}
+     {{ parent() }}
+ {% endblock %}
 
 {% block body %}
+
+    {# Todo add form #}
+    {% block body %}
+        <div class="books">
+           <h1>Ajouter un livre .</h1>
+        </div>
+    {% endblock %}
 
 {% endblock %}
