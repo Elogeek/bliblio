@@ -1,20 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ShelfController!{% endblock %}
+{% block title %}Biblio{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    {{ parent() }}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        <main class="width_80">
+            <a class="add" href="/shelf/add">Ajouter une étagère</a>
+            <div class="marg_30">
+                {% for shelf in shelfs %}
+                    <a href="/borrower-category/{{ shelf.id }}" class="shelf ">
+                        <p>{{ shelf.name }}</p>
+                    </a>
+                    <div class="marg_30 flexRow">
+                        <div class="marg_30_rl">
+                            <a class="update" href="/shelf/update/{{ shelf.id }}"><i class="fa-solid fa-pen-to-square"></i> Modifier l'étagère</a>
+                        </div>
+                        <div class="marg_30_rl">
+                            <a class="delete" href="/shelf/delete/{{ shelf.id }}"><i class="fa-solid fa-trash-can"></i> Supprimer l'étagère</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/elodie/IdeaProjects/bliblio/src/Controller/ShelfController.php'|file_link(0) }}">src/Controller/ShelfController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/elodie/IdeaProjects/bliblio/templates/shelf/index.html.twig'|file_link(0) }}">templates/shelf/index.html.twig</a></code></li>
-    </ul>
-</div>
+        </main>
+
 {% endblock %}

@@ -1,21 +1,38 @@
-{% extends '/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-  {% block title %}
-      Hello welcome in the page add a book .
-  {% endblock %}
-
-{# Block menu #}
- {% block sidebar %}
-     {{ parent() }}
- {% endblock %}
+{% block title %}Ajouter un livre{% endblock %}
 
 {% block body %}
-
-    {# Todo add form #}
-    {% block body %}
-        <div class="books">
-           <h1>Ajouter un livre .</h1>
+    {{ parent() }}
+    <main>
+        <h1 class="titleBook center">Ajouter un livre</h1>
+        <div class="container-fluid mt-4 w-50">
+            {% form_theme form 'bootstrap_5_layout.html.twig' %}
+            {{ form_start(form) }}
+            <div>
+                {{ form_row(form.name) }}
+            </div>
+            <div>
+                {{ form_row(form.picture) }}
+            </div>
+            <div>
+                {{ form_row(form.author) }}
+            </div>
+            <div>
+                {{ form_row(form.date) }}
+            </div>
+            <div>
+                {{ form_row(form.description) }}
+            </div>
+            <div>
+                {{ form_row(form.category) }}
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Enregistrer" name="submit" class="btn-primary btn">
+            </div>
+            {{ form_widget(form._token) }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token("book-add") }}">
+            {{ form_end(form, {'render_rest': false}) }}
         </div>
-    {% endblock %}
-
+    </main>
 {% endblock %}

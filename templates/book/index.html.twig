@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les livres{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    <main class="">
+        {% for book in books %}
+            <h1 class="titleBook center marg_30">{{ book.name }} </h1>
+            <div class="container center_flex width_50">
+                <p class="grey"><span class="white">Auteur : </span>{{ book.author}}</p>
+                <p class="grey"><span class="white">Description : </span>{{ book.description}}</p>
+                <p class="grey"><span class="white">Catégorie : </span>{{ book.category}}</p>
+                <div class="flexColumn">
+                    <div class="marg_30">
+                        <a class="update" href="/borrower/update/{{ borrower.id }}"><i class="fa-solid fa-pen-to-square"></i> Modifier le livre </a>
+                    </div>
+                    <div class="marg_30">
+                        <a class="delete" href="/borrower/delete/{{ borrower.id }}"><i class="fa-solid fa-trash-can"></i> Supprimer le livre</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </main>
+{% endblock %}

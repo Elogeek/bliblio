@@ -3,75 +3,153 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Form\BookType;
+use App\Repository\BookRepository;
+use App\Repository\BorrowerRepository;
+use App\Repository\CategoryRepository;
+use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/books')]
-class BookController extends AbstractController
-{
+class BookController extends AbstractController {
 
     /**
-     * View Home books
+     * Display list of the books
      */
-    #[Route('/', name: 'home')]
-    public function list(EntityManagerInterface $em): Response {
-        $books = $em->getRepository(Book::class)->findAll();
-        return $this->render('book/home.html.twig', [
-            'books' => $books,
-        ]);
+    #[Route('/books', name: 'book_list')]
+    public function list(BookRepository $repository): Response {
+
+        $books = $repository->findAll();
+        return $this->render('book/index.html.twig', ['books' => $books,]);
     }
 
     /**
-     * Add book in the db
+     * all book by id to category
+     * @param int $idCategory
+     * @param BookRepository $repository
+     * @return Response
      */
-    #[Route('/add', name: 'book_add')]
-    public function addProduct(EntityManagerInterface $em) : Response {
+    #[Route('/category-book/{idCategory}', name: 'book')]
+    public function index(int $idCategory, BookRepository $repository): Response {
+
+        $books = $repository->findBy(['category' => $idCategory]);
+        return $this->render('book/index.html.twig', ["books" => $books]);
+    }
+
+    /** add a book
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    #[Route('/book/add', name: 'book_add')]
+    public function add(Request $request, EntityManagerInterface $entityManager): Response {
+
         $book = new Book();
-        $book
-            ->setName('super nom')
-            ->setCategory(1)
-            ->setAvailable(1)
-            ->setReader('elodie')
-            ->setAuthor('bibi')
-            ->setShortDescription('une super description')
-        ;
+        $form = $this->createForm(BookType::class, $book);
 
-        $em->persist($book);
-        // Enregistrement en dbb
-        $em->flush();
-        return $this->render('book/add.html.twig');
+        $form->handleRequest($request);
+
+        $submittedToken = $request->request->get("csrf_token");
+
+        if ($this->isCsrfTokenValid("book-add", $submittedToken)) {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->persist($book);
+                $entityManager->flush();
+                $this->addFlash("success", "Le livre a été créé avec succès !");
+                $id = $book->getCategory()->getId();
+                return $this->redirect("/category-book/$id");
+            }
+        }
+        return $this->render('book/add.html.twig', ['form' => $form->createView()]);
     }
 
     /**
-     * Update a book
+     * display one book
+     * @param int $idBook
+     * @param BookRepository $repository
+     * @return Response
      */
-    #[Route('/update/{id}', name: 'book-update')]
-    public function updateBook(Book $book, EntityManagerInterface $em): Response {
-        $book->setName('Mon livre');
-        $em->flush();
-        return $this->render('book/update.html.twig');
+    #[Route('/book/{idBook}', name: 'book_one')]
+    public function oneBook(int $idBook, BookRepository $repository): Response {
+
+        $book = $repository->find($idBook);
+        return $this->render('book/oneBook.html.twig', ["book" => $book]);
     }
 
     /**
-     * Delete a book
+     * update a book
+     * @param Book $book
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
      */
-    #[Route('/delete/{id}', name: 'book-delete')]
-    public function deleteProduct(Book $book, EntityManagerInterface $em): Response {
-        $em->remove($book);
-        $em->flush();
-        return $this->render('book/delete.html.twig');
+    #[Route('/book/update/{id}', name: 'book_update')]
+    public function update(Book $book, Request $request, EntityManagerInterface $entityManager): Response {
+
+        $form = $this->createForm(BookType::class, $book);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash("success", "Le livre a été modifié avec succès ! !");
+            $id = $book->getId();
+            return $this->redirect("/book/$id");
+        }
+        return $this->render('book/update.html.twig', ['form' => $form->createView()]);
     }
 
     /**
-     * View a single book
+     * add a borrower to book
+     * @param Book $book
+     * @param EntityManagerInterface $entityManager
+     * @param BorrowerRepository $borrowerRepository
+     * @return Response
      */
-    #[Route('/view/{id}', name: 'book-view_first')]
-    public function viewSingleBook(Book $book): Response {
-        return $this->render('book/single.html.twig', [
-            'book' => $book,
-        ]);
+    #[Route('/book/update-borrower/{id}', name: 'book_update_borrower')]
+    public function updateBorrower(Book $book, EntityManagerInterface $entityManager, BorrowerRepository $borrowerRepository): Response {
+
+        $borrower = $borrowerRepository->find(1);
+
+        $date = new \DateTime();
+
+        $book->setBorrower($borrower);
+        $book->setReserved($date);
+        $date = date_create();
+        date_add($date, date_interval_create_from_date_string('10 days'));
+        $book->setRecovery($date);
+        $entityManager->flush();
+
+        $id = $book->getId();
+        return $this->redirect("/book/$id");
+    }
+    // Delete borrower === render the book
+    #[Route('/book/update-borrower-delete/{id}', name: 'book_update_borrower_delete_id')]
+    public function updateBorrowerDelete(Book $book, EntityManagerInterface $entityManager): Response {
+
+        $book->setBorrower(null);
+        $book->setRecovery(null);
+        $book->setReserved(null);
+        $entityManager->flush();
+
+        $id = $book->getId();
+        return $this->redirect("/book/$id");
     }
 
+    /**
+     * delete a book
+     * @param Book $book
+     * @param EntityManagerInterface $entityManager
+     * @param BookRepository $repository
+     * @return Response
+     */
+    #[Route('/book/delete/{id}', name: 'book_delete')]
+    public function delete(Book $book, EntityManagerInterface $entityManager, BookRepository $repository): Response {
+
+        $repository->delete($book->getId());
+        $id = $book->getCategory()->getId();
+        return $this->redirect("/category-book/$id");
+    }
 }
