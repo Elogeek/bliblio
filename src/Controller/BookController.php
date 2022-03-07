@@ -17,16 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class BookController extends AbstractController {
 
     /**
-     * Display list of the books
-     */
-    #[Route('/books', name: 'book_list')]
-    public function list(BookRepository $repository): Response {
-
-        $books = $repository->findAll();
-        return $this->render('book/index.html.twig', ['books' => $books,]);
-    }
-
-    /**
      * all book by id to category
      * @param int $idCategory
      * @param BookRepository $repository
@@ -56,6 +46,7 @@ class BookController extends AbstractController {
 
         if ($this->isCsrfTokenValid("book-add", $submittedToken)) {
             if ($form->isSubmitted() && $form->isValid()) {
+                $file = $form->get('picture')->getData();
                 $entityManager->persist($book);
                 $entityManager->flush();
                 $this->addFlash("success", "Le livre a été créé avec succès !");
