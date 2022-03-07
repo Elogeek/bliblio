@@ -7,12 +7,14 @@
 
     <main class="width_80">
         <div class="marg_30 flexRow">
-            <div class="width_30">
-            <img class="width_100" src="{{ book.picture }}" alt="{{ book.name }}">
-            </div>
             <div class="width_70 containerInfoBook">
                 <h1 class="titleBook">{{ book.name |title }}</h1>
-                <div class="marg_30 flexRow">
+                <p class="grey"><span class="purple">Auteur : </span> {{ book.author |upper }}</p>
+                <p class="grey"><span class="purple">Parution : </span> {{ book.date|date("d/m/Y") }}</p>
+                <p class="grey"><span class="purple">Catégorie : </span>{{ book.category.name }}</p>
+                <p class="grey"><span class="purple">Résumer : </span> {{ book.description }}</p>
+
+                <div class="marg_30 flexRow" >
                     <div class="marg_30_rl">
                         <a class="update" href="/book/update/{{ book.id }}"><i class="fa-solid fa-pen-to-square"></i> Modifier le livre</a>
                     </div>
@@ -20,10 +22,6 @@
                         <a class="delete" href="/book/delete/{{ book.id }}"><i class="fa-solid fa-trash-can"></i> Supprimer le livre</a>
                     </div>
                 </div>
-                <p class="grey"><span class="blue">Auteur : </span> {{ book.author |upper }}</p>
-                <p class="grey"><span class="blue">Parution : </span> {{ book.date|date("d/m/Y") }}</p>
-                <p class="grey"><span class="blue">Catégorie : </span>{{ book.category.name }}</p>
-                <p class="grey"><span class="blue">Résumer : </span> {{ book.description }}</p>
 
                 {% if book.borrower is null %}
                     <a class="button_borrower" href="/book/update-borrower/{{ book.id }}">Emprunter</a>
@@ -32,10 +30,10 @@
                         <a class="button_borrower" href="/book/update-borrower-delete/{{ book.id }}">Remettre</a>
                         <div class="flexRow center_flex2">
                             <p class="grey marg_30_rl">
-                                <span class="white">Réservation : </span> {{ book.reserved |date("d/m/Y") }}
+                                <span class="purple">Réservation : </span> {{ book.reserved |date("d/m/Y") }}
                             </p>
                             <p class="grey marg_30_rl">
-                                <span class="white">Récupération : </span>{{ book.recovery |date("d/m/Y") }}
+                                <span class="purple">Récupération : </span>{{ book.recovery |date("d/m/Y") }}
                             </p>
                         </div>
                     </div>

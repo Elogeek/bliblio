@@ -59,6 +59,10 @@ header > div > a {
     color: white;
 }
 
+.purple {
+    color: #9a80bb;
+}
+
 /* Design container home page shelf */
 .width_80 {
     width: 80%;
