@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class BookController extends AbstractController {
 
     /**
-     * all book by id to category
+     * All book by id to category
      * @param int $idCategory
      * @param BookRepository $repository
      * @return Response
@@ -29,7 +29,7 @@ class BookController extends AbstractController {
         return $this->render('book/index.html.twig', ["books" => $books]);
     }
 
-    /** add a book
+    /** Add a book
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response

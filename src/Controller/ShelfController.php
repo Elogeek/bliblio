@@ -14,19 +14,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class ShelfController extends AbstractController {
 
     /**
-     * all a borrowers
+     * all a shelf
      * @param ShelfRepository $repository
      * @return Response
      */
     #[Route('/', name: 'shelf')]
     public function index(ShelfRepository $repository): Response {
-
         $shelfs = $repository->findAll();
         return $this->render('shelf/index.html.twig', ['shelfs' => $shelfs,]);
     }
 
     /**
      * add a borrower
+     * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
      */

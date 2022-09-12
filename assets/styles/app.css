@@ -66,8 +66,7 @@ header > div > a {
 /* Design container home page shelf */
 .width_80 {
     width: 80%;
-    margin: auto;
-    margin-top: 12rem;
+    margin: 12rem auto auto;
 }
 
 /* Design shelf */

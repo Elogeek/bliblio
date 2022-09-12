@@ -8,9 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\DateTime;
 
-/**
- *
- */
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
 {
